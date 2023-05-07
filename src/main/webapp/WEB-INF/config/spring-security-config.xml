@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+	xmlns="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/security 
+	http://www.springframework.org/schema/security/spring-security-5.8.xsd">
+
+	<http auto-config="true">
+		<csrf disabled="true" />
+		<intercept-url pattern="/admin/**"
+			access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/user/**"
+			access="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')" />
+		<intercept-url pattern="/chi-tiet-san-pham/add-to-cart"
+			access="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')"/>
+		<form-login login-page="/auth/login-admin"
+			login-processing-url="/auth/login"
+			default-target-url="/trang-chu"
+			authentication-failure-url="/auth/login-admin?error"
+			username-parameter="username" password-parameter="password" />
+		<logout logout-url="/j_spring_security_logout"
+			logout-success-url="/trang-chu" delete-cookies="JSESSIONID" />
+			
+	</http>
+
+	<authentication-manager>
+		<authentication-provider
+			user-service-ref="customAccountDetailService">
+			<password-encoder ref="passwordEncoder" />
+		</authentication-provider>
+	</authentication-manager>
+	
+	<security:global-method-security pre-post-annotations="enabled" />
+</beans:beans>
